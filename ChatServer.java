@@ -1,22 +1,70 @@
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
+
+import ch19.sec12.Member;
 
 public class ChatServer {
 	//필드
 	ServerSocket serverSocket;
 	ExecutorService threadPool = Executors.newFixedThreadPool(100);
 	Map<String, SocketClient> chatRoom = Collections.synchronizedMap(new HashMap<>());
+	
+	
+	
 
+	private static final String CATTING_FILE_NAME = "c:\\temp\\chatting.txt";
+
+	public void saveMessage(SocketClient sender, String message) {
+		      
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println(now);
+		String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss"));
+	
+		try {
+			File file = new File(CATTING_FILE_NAME);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileWriter fileWriter = new FileWriter(file,true);
+			// 출력 버퍼 생성
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(formatedNow+" "+sender.chatName+"@"+sender.clientIp+":"+message);
+			bufferedWriter.write("\r\n");
+			
+			bufferedWriter.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 	//메소드: 서버 시작
 	public void start() throws IOException {
 		serverSocket = new ServerSocket(50001);	
