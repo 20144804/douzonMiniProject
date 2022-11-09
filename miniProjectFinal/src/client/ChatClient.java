@@ -38,7 +38,7 @@ public class ChatClient {
 		dis = new DataInputStream(socket.getInputStream());
 		dos = new DataOutputStream(socket.getOutputStream());
 		menu = new Menu();
-		System.out.println("[클라이언트] 서버에 연결됨");
+		System.out.println("[클라이언트] 서버에 연결됨sss");
 	}
 
 	// 메소드: JSON 받기
